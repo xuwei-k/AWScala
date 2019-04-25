@@ -34,7 +34,7 @@ class ReservedNode(
   nodeType: NodeType,
   offeringId: String,
   offeringType: String,
-  recurringCharges: Seq[RecurringCharge],
+  recurringCharges: collection.Seq[RecurringCharge],
   startedAt: DateTime)
   extends aws.model.ReservedNode {
 

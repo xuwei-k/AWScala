@@ -23,8 +23,8 @@ case class SecurityGroup(
   groupId: String,
   groupName: String,
   description: String,
-  ipPermissions: Seq[IpPermission],
-  ipPermissionsEgress: Seq[IpPermission],
+  ipPermissions: collection.Seq[IpPermission],
+  ipPermissionsEgress: collection.Seq[IpPermission],
   ownerId: String, tags: Map[String, String],
   vpcId: String) extends aws.model.SecurityGroup
 
@@ -55,9 +55,9 @@ object IpPermission {
 case class IpPermission(
   fromPort: Int,
   toPort: Int,
-  ipRanges: Seq[String],
+  ipRanges: collection.Seq[String],
   ipProtocol: String,
-  userIdGroupPairs: Seq[UserIdGroupPair]) extends aws.model.IpPermission
+  userIdGroupPairs: collection.Seq[UserIdGroupPair]) extends aws.model.IpPermission
 
 object UserIdGroupPair {
   def apply(u: aws.model.UserIdGroupPair): UserIdGroupPair = {

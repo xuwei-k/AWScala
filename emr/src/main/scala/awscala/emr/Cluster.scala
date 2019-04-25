@@ -31,7 +31,7 @@ case class Cluster(in: aws.model.Cluster) extends aws.model.Cluster {
   def terminationProtected = getTerminationProtected()
   def visibleToAllUsers = getVisibleToAllUsers()
 
-  def bootstrapActions(implicit emr: EMR): Seq[aws.model.Command] = {
+  def bootstrapActions(implicit emr: EMR): collection.Seq[aws.model.Command] = {
     cachedBootstrapActions match {
       case None =>
         cachedBootstrapActions = Some(emr.bootstrapActions(Some(getId)))
@@ -40,7 +40,7 @@ case class Cluster(in: aws.model.Cluster) extends aws.model.Cluster {
     }
   }
 
-  def stepSummaries(implicit emr: EMR): Seq[aws.model.StepSummary] = {
+  def stepSummaries(implicit emr: EMR): collection.Seq[aws.model.StepSummary] = {
     cachedStepSummaries match {
       case None =>
         cachedStepSummaries = Some(emr.stepSummaries(Some(getId)))

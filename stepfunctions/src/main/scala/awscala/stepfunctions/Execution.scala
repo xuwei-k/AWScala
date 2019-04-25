@@ -69,7 +69,7 @@ case class Execution(arn: String, startTime: DateTime) {
     }
   }
 
-  def history()(implicit steps: StepFunctions): Seq[ExecutionEvent] = {
+  def history()(implicit steps: StepFunctions): collection.Seq[ExecutionEvent] = {
     object HistorySequencer extends Sequencer[HistoryEvent, GetExecutionHistoryResult, String] {
       private val base = new GetExecutionHistoryRequest().withExecutionArn(arn)
       def getInitial: GetExecutionHistoryResult = steps.getExecutionHistory(base)

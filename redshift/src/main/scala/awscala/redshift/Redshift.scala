@@ -31,7 +31,7 @@ trait Redshift extends aws.AmazonRedshift {
   // Clusters
   // ------------------------------------------
 
-  def clusters: Seq[Cluster] = describeClusters.getClusters.asScala.map(c => Cluster(c))
+  def clusters: collection.Seq[Cluster] = describeClusters.getClusters.asScala.map(c => Cluster(c))
 
   def cluster(identifier: String, marker: Option[String] = None, maxRecords: Option[Int] = None): Option[Cluster] = {
     val req = new aws.model.DescribeClustersRequest().withClusterIdentifier(identifier)
@@ -84,7 +84,7 @@ trait Redshift extends aws.AmazonRedshift {
       .withSkipFinalClusterSnapshot(true))
   }
 
-  def clusterVersions: Seq[ClusterVersion] = describeClusterVersions.getClusterVersions.asScala.map(v => ClusterVersion(v))
+  def clusterVersions: collection.Seq[ClusterVersion] = describeClusterVersions.getClusterVersions.asScala.map(v => ClusterVersion(v))
 
   def clusterVersion(version: String, paramtereGroupFamily: String = null, marker: String = null, maxRecords: Int = -1): Option[ClusterVersion] = {
     val req = new aws.model.DescribeClusterVersionsRequest().withClusterVersion(version)
@@ -100,13 +100,13 @@ trait Redshift extends aws.AmazonRedshift {
     describeClusterVersions(req).getClusterVersions.asScala.headOption.map(v => ClusterVersion(v))
   }
 
-  def reservedNodes: Seq[ReservedNode] = describeReservedNodes.getReservedNodes.asScala.map(n => ReservedNode(n)).toSeq
+  def reservedNodes: collection.Seq[ReservedNode] = describeReservedNodes.getReservedNodes.asScala.map(n => ReservedNode(n)).toSeq
 
   // ------------------------------------------
   // Snapshots
   // ------------------------------------------
 
-  def snapshots: Seq[Snapshot] = {
+  def snapshots: collection.Seq[Snapshot] = {
     describeClusterSnapshots(new aws.model.DescribeClusterSnapshotsRequest())
       .getSnapshots.asScala.map(s => Snapshot(s))
   }
@@ -194,13 +194,13 @@ trait Redshift extends aws.AmazonRedshift {
   // Events
   // ------------------------------------------
 
-  def events: Seq[Event] = describeEvents.getEvents.asScala.map(e => Event(e)).toSeq
+  def events: collection.Seq[Event] = describeEvents.getEvents.asScala.map(e => Event(e)).toSeq
 
   // ------------------------------------------
   // Cluster Parameter Groups
   // ------------------------------------------
 
-  def clusterParameterGroups: Seq[ClusterParameterGroup] = {
+  def clusterParameterGroups: collection.Seq[ClusterParameterGroup] = {
     describeClusterParameterGroups(new aws.model.DescribeClusterParameterGroupsRequest())
       .getParameterGroups.asScala.map(g => ClusterParameterGroup(g))
   }
@@ -242,7 +242,7 @@ trait Redshift extends aws.AmazonRedshift {
       .withEC2SecurityGroupOwnerId(ec2SecurityGroup.ownerId))
   }
 
-  def clusterSecurityGroups: Seq[ClusterSecurityGroup] = {
+  def clusterSecurityGroups: collection.Seq[ClusterSecurityGroup] = {
     describeClusterSecurityGroups(new aws.model.DescribeClusterSecurityGroupsRequest())
       .getClusterSecurityGroups.asScala.map(g => ClusterSecurityGroup(g))
   }
@@ -275,7 +275,7 @@ trait Redshift extends aws.AmazonRedshift {
   // Cluster Subnet Groups
   // ------------------------------------------
 
-  def clusterSubnetGroups: Seq[ClusterSubnetGroup] = {
+  def clusterSubnetGroups: collection.Seq[ClusterSubnetGroup] = {
     describeClusterSubnetGroups(new aws.model.DescribeClusterSubnetGroupsRequest())
       .getClusterSubnetGroups.asScala.map(g => ClusterSubnetGroup(g))
   }
@@ -291,7 +291,7 @@ trait Redshift extends aws.AmazonRedshift {
     describeClusterSubnetGroups(req).getClusterSubnetGroups.asScala.headOption.map(g => ClusterSubnetGroup(g))
   }
 
-  def createSubnetGroup(name: String, description: String, subnetIds: Seq[String]): ClusterSubnetGroup = {
+  def createSubnetGroup(name: String, description: String, subnetIds: collection.Seq[String]): ClusterSubnetGroup = {
     ClusterSubnetGroup(createClusterSubnetGroup(
       new aws.model.CreateClusterSubnetGroupRequest()
         .withClusterSubnetGroupName(name)

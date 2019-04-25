@@ -16,7 +16,7 @@ trait Sequencer[Item, Result, Marker] {
   def getFromMarker(marker: Marker): Result
   def getList(r: Result): java.util.List[Item]
 
-  def sequence: Seq[Item] = {
+  def sequence: collection.Seq[Item] = {
     case class State[Item](items: List[Item], nextMarker: Option[Marker])
 
     @scala.annotation.tailrec

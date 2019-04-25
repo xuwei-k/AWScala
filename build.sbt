@@ -75,7 +75,7 @@ lazy val core = project
       "org.joda" % "joda-convert" % "2.1.2",
       "org.bouncycastle" % "bcprov-jdk16" % "1.46" % "provided",
       "ch.qos.logback" % "logback-classic" % "1.2.3" % "test",
-      "org.scalatest" %% "scalatest" % "3.0.7" % "test"
+      "org.scalatest" %% "scalatest" % "3.0.8-RC2" % "test"
     )
   )
 
@@ -105,7 +105,7 @@ def awsProject(service: String) = {
       libraryDependencies ++= Seq(
         "com.amazonaws" % s"aws-java-sdk-$service" % awsJavaSdkVersion,
         "ch.qos.logback" % "logback-classic" % "1.2.3" % "test",
-        "org.scalatest" %% "scalatest" % "3.0.7" % "test"
+        "org.scalatest" %% "scalatest" % "3.0.8-RC2" % "test"
       )
     )
     .dependsOn(core)

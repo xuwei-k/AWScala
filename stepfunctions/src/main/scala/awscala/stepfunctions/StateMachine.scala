@@ -24,7 +24,7 @@ case class StateMachine(arn: String) {
 
   def execution(name: String)(implicit steps: StepFunctions): Option[Execution] = executions().find(_.name == name)
 
-  def executions()(implicit steps: StepFunctions): Seq[Execution] = {
+  def executions()(implicit steps: StepFunctions): collection.Seq[Execution] = {
     object ExecutionsSequencer extends Sequencer[ExecutionListItem, ListExecutionsResult, String] {
       val base = new ListExecutionsRequest().withStateMachineArn(arn)
       def getInitial: ListExecutionsResult = steps.listExecutions(base)

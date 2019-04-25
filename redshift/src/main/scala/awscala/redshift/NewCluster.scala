@@ -20,5 +20,5 @@ case class NewCluster(
   allowVersionUpgrade: Boolean = true,
   publiclyAccessible: Boolean = true,
   automatedSnapshotRetentionPeriod: Int = 1,
-  securityGroupNames: Seq[String] = Nil,
-  vpcSecurityGroupIds: Seq[String] = Nil)
+  securityGroupNames: collection.Seq[String] = Nil,
+  vpcSecurityGroupIds: collection.Seq[String] = Nil)

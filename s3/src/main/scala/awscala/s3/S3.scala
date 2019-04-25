@@ -59,7 +59,7 @@ trait S3 extends aws.AmazonS3 {
   // Buckets
   // ------------------------------------------
 
-  def buckets: Seq[Bucket] = listBuckets.asScala.toSeq.map(b => Bucket(b))
+  def buckets: collection.Seq[Bucket] = listBuckets.asScala.toSeq.map(b => Bucket(b))
 
   def bucket(name: String): Option[Bucket] = buckets.find(_.name == name)
 
@@ -127,7 +127,7 @@ trait S3 extends aws.AmazonS3 {
   def metadata(bucket: Bucket, key: String) = getObjectMetadata(bucket.name, key)
 
   // listObjects
-  def objectSummaries(bucket: Bucket): Seq[S3ObjectSummary] = objectSummaries(bucket, "")
+  def objectSummaries(bucket: Bucket): collection.Seq[S3ObjectSummary] = objectSummaries(bucket, "")
 
   def objectSummaries(bucket: Bucket, prefix: String): Stream[S3ObjectSummary] = {
     import com.amazonaws.services.s3.model.ObjectListing
@@ -162,9 +162,9 @@ trait S3 extends aws.AmazonS3 {
     stream(Placeholder(Nil, prefix :: Nil, None) :: Nil)
   }
 
-  def keys(bucket: Bucket): Seq[String] = objectSummaries(bucket).map(os => os.getKey)
+  def keys(bucket: Bucket): collection.Seq[String] = objectSummaries(bucket).map(os => os.getKey)
 
-  def keys(bucket: Bucket, prefix: String): Seq[String] = objectSummaries(bucket, prefix).map(os => os.getKey)
+  def keys(bucket: Bucket, prefix: String): collection.Seq[String] = objectSummaries(bucket, prefix).map(os => os.getKey)
 
   // ls
   /**
@@ -303,7 +303,7 @@ trait S3 extends aws.AmazonS3 {
     deleteVersion(new aws.model.DeleteVersionRequest(obj.bucket.name, obj.key, versionId))
   }
 
-  def deleteObjects(objs: Seq[S3Object]): Unit = {
+  def deleteObjects(objs: collection.Seq[S3Object]): Unit = {
     objs
       .groupBy(_.bucket)
       .foreach {

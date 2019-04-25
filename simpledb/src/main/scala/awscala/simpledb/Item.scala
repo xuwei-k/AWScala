@@ -18,7 +18,7 @@ object Item {
   }
 }
 
-case class Item(domain: Domain, name: String, alternateNameEncoding: Option[String] = None, attributes: Seq[Attribute] = Nil)
+case class Item(domain: Domain, name: String, alternateNameEncoding: Option[String] = None, attributes: collection.Seq[Attribute] = Nil)
   extends aws.model.Item {
 
   setAlternateNameEncoding(alternateNameEncoding.orNull[String])
@@ -34,8 +34,8 @@ case class Item(domain: Domain, name: String, alternateNameEncoding: Option[Stri
     simpleDB.putAttributes(this, attributes: _*)
   }
 
-  def delete(attributes: Seq[Attribute])(implicit simpleDB: SimpleDB): Unit = deleteAttributes(attributes)
-  def deleteAttributes(attributes: Seq[Attribute])(implicit simpleDB: SimpleDB): Unit = {
+  def delete(attributes: collection.Seq[Attribute])(implicit simpleDB: SimpleDB): Unit = deleteAttributes(attributes)
+  def deleteAttributes(attributes: collection.Seq[Attribute])(implicit simpleDB: SimpleDB): Unit = {
     simpleDB.deleteAttributes(attributes)
   }
 

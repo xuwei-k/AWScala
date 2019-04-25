@@ -50,10 +50,10 @@ class Cluster(
   val restoreStatus: Option[RestoreStatus],
   val preferredMaintenanceWindow: String,
   val pendingModifiedValues: PendingModifiedValues,
-  val parameterGroupStatuses: Seq[ClusterParameterGroupStatus],
-  val securityGroupMemberships: Seq[ClusterSecurityGroupMembership],
+  val parameterGroupStatuses: collection.Seq[ClusterParameterGroupStatus],
+  val securityGroupMemberships: collection.Seq[ClusterSecurityGroupMembership],
   val vpcId: String,
-  val vpcSecurityGroupMemberships: Seq[VpcSecurityGroupMembership],
+  val vpcSecurityGroupMemberships: collection.Seq[VpcSecurityGroupMembership],
   val createdAt: DateTime) extends aws.model.Cluster {
 
   setAllowVersionUpgrade(allowVersionUpgrade)

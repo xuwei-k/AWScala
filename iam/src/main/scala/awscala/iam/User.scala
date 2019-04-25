@@ -24,7 +24,7 @@ case class User(id: String, name: String, arn: String, path: String, createdAt: 
   def loginProfile()(implicit iam: IAM): Option[LoginProfile] = iam.loginProfile(this)
 
   // groups
-  def groups()(implicit iam: IAM): Seq[Group] = iam.groups(this)
+  def groups()(implicit iam: IAM): collection.Seq[Group] = iam.groups(this)
   def join(group: Group)(implicit iam: IAM) = iam.addUserToGroup(group, this)
   def leave(group: Group)(implicit iam: IAM) = iam.removeUserFromGroup(group, this)
 
@@ -37,11 +37,11 @@ case class User(id: String, name: String, arn: String, path: String, createdAt: 
   def removePolicy(policy: UserPolicy)(implicit iam: IAM) = iam.deleteUserPolicy(policy)
 
   // access keys
-  def accessKeys()(implicit iam: IAM): Seq[AccessKey] = iam.accessKeys(this)
+  def accessKeys()(implicit iam: IAM): collection.Seq[AccessKey] = iam.accessKeys(this)
   def createAccessKey()(implicit iam: IAM): AccessKey = iam.createAccessKey(this)
 
   // MFA devices
-  def virtualMFADevices()(implicit iam: IAM): Seq[VirtualMFADevice] = iam.virtualMFADevices(this)
+  def virtualMFADevices()(implicit iam: IAM): collection.Seq[VirtualMFADevice] = iam.virtualMFADevices(this)
   def add(device: VirtualMFADevice, code1: String, code2: String)(implicit iam: IAM) = {
     addVirtualMFADevice(device, code1, code2)
   }

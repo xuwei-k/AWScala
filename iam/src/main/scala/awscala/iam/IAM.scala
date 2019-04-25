@@ -32,7 +32,7 @@ trait IAM extends aws.AmazonIdentityManagement {
   // Account Aliases
   // ------------------------------------------
 
-  def accountAliases: Seq[String] = listAccountAliases.getAccountAliases.asScala
+  def accountAliases: collection.Seq[String] = listAccountAliases.getAccountAliases.asScala
   def createAccountAlias(alias: String): Unit = {
     createAccountAlias(new aws.model.CreateAccountAliasRequest().withAccountAlias(alias))
   }
@@ -44,8 +44,8 @@ trait IAM extends aws.AmazonIdentityManagement {
   // Groups
   // ------------------------------------------
 
-  def groups: Seq[Group] = listGroups.getGroups.asScala.map(g => Group(g)).toSeq
-  def groups(user: User): Seq[Group] = {
+  def groups: collection.Seq[Group] = listGroups.getGroups.asScala.map(g => Group(g)).toSeq
+  def groups(user: User): collection.Seq[Group] = {
     listGroupsForUser(new aws.model.ListGroupsForUserRequest().withUserName(user.name))
       .getGroups.asScala.map(g => Group(g)).toSeq
   }
@@ -78,7 +78,7 @@ trait IAM extends aws.AmazonIdentityManagement {
   // ------------------------------------------
 
   def policyNames(group: Group) = groupPolicyNames(group)
-  def groupPolicyNames(group: Group): Seq[String] = {
+  def groupPolicyNames(group: Group): collection.Seq[String] = {
     listGroupPolicies(new aws.model.ListGroupPoliciesRequest().withGroupName(group.name)).getPolicyNames.asScala.toSeq
   }
 
@@ -106,7 +106,7 @@ trait IAM extends aws.AmazonIdentityManagement {
   // Users
   // ------------------------------------------
 
-  def users: Seq[User] = listUsers.getUsers.asScala.map(u => User(u)).toSeq
+  def users: collection.Seq[User] = listUsers.getUsers.asScala.map(u => User(u)).toSeq
   def user(name: String): Option[User] = try {
     Option(User(getUser(new aws.model.GetUserRequest().withUserName(name)).getUser))
   } catch { case e: aws.model.NoSuchEntityException => None }
@@ -128,7 +128,7 @@ trait IAM extends aws.AmazonIdentityManagement {
   // ------------------------------------------
 
   def policyNames(user: User) = userPolicyNames(user)
-  def userPolicyNames(user: User): Seq[String] = {
+  def userPolicyNames(user: User): collection.Seq[String] = {
     listUserPolicies(new aws.model.ListUserPoliciesRequest().withUserName(user.name)).getPolicyNames.asScala.toSeq
   }
 
@@ -155,8 +155,8 @@ trait IAM extends aws.AmazonIdentityManagement {
   // Access Keys
   // ------------------------------------------
 
-  def accessKeys: Seq[AccessKey] = listAccessKeys.getAccessKeyMetadata.asScala.map(meta => AccessKey(meta)).toSeq
-  def accessKeys(user: User): Seq[AccessKey] = {
+  def accessKeys: collection.Seq[AccessKey] = listAccessKeys.getAccessKeyMetadata.asScala.map(meta => AccessKey(meta)).toSeq
+  def accessKeys(user: User): collection.Seq[AccessKey] = {
     listAccessKeys(new aws.model.ListAccessKeysRequest().withUserName(user.name)).getAccessKeyMetadata
       .asScala.map(meta => AccessKey(meta)).toSeq
   }
@@ -183,7 +183,7 @@ trait IAM extends aws.AmazonIdentityManagement {
   // Roles
   // ------------------------------------------
 
-  def roles: Seq[Role] = listRoles.getRoles.asScala.map(r => Role(r)).toSeq
+  def roles: collection.Seq[Role] = listRoles.getRoles.asScala.map(r => Role(r)).toSeq
 
   def createRole(name: String, path: String, assumeRolePolicy: Policy): Role = {
     createRole(name, path, assumeRolePolicy.toJSON)
@@ -205,7 +205,7 @@ trait IAM extends aws.AmazonIdentityManagement {
   // ------------------------------------------
 
   def policyNames(role: Role) = rolePolicyNames(role)
-  def rolePolicyNames(role: Role): Seq[String] = {
+  def rolePolicyNames(role: Role): collection.Seq[String] = {
     listRolePolicies(new aws.model.ListRolePoliciesRequest().withRoleName(role.name)).getPolicyNames.asScala.toSeq
   }
 
@@ -233,10 +233,10 @@ trait IAM extends aws.AmazonIdentityManagement {
   // Instance Profiles
   // ------------------------------------------
 
-  def instanceProfiles: Seq[InstanceProfile] = {
+  def instanceProfiles: collection.Seq[InstanceProfile] = {
     listInstanceProfiles.getInstanceProfiles.asScala.map(p => InstanceProfile(p)).toSeq
   }
-  def instanceProfiles(role: Role): Seq[InstanceProfile] = {
+  def instanceProfiles(role: Role): collection.Seq[InstanceProfile] = {
     listInstanceProfilesForRole(new aws.model.ListInstanceProfilesForRoleRequest().withRoleName(role.name))
       .getInstanceProfiles.asScala.map(p => InstanceProfile(p)).toSeq
   }
@@ -289,10 +289,10 @@ trait IAM extends aws.AmazonIdentityManagement {
   // Virtual MFA Devices
   // ------------------------------------------
 
-  def virtualMFADevices: Seq[VirtualMFADevice] = {
+  def virtualMFADevices: collection.Seq[VirtualMFADevice] = {
     listVirtualMFADevices.getVirtualMFADevices.asScala.map(d => VirtualMFADevice(d)).toSeq
   }
-  def virtualMFADevices(user: User): Seq[VirtualMFADevice] = {
+  def virtualMFADevices(user: User): collection.Seq[VirtualMFADevice] = {
     listMFADevices(new aws.model.ListMFADevicesRequest().withUserName(user.name)).getMFADevices.asScala
       .map(d => VirtualMFADevice(user, d)).toSeq
   }

@@ -25,7 +25,7 @@ case class Role(id: String, name: String, arn: String, path: String, assumeRoleP
   setRoleName(name)
 
   // instance profiles
-  def instanceProfiles()(implicit iam: IAM): Seq[InstanceProfile] = iam.instanceProfiles(this)
+  def instanceProfiles()(implicit iam: IAM): collection.Seq[InstanceProfile] = iam.instanceProfiles(this)
 
   // policies
   def policyNames()(implicit iam: IAM) = iam.rolePolicyNames(this)

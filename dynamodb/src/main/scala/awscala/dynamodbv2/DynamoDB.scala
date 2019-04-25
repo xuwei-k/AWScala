@@ -48,7 +48,7 @@ trait DynamoDB extends aws.AmazonDynamoDB {
   // Tables
   // ------------------------------------------
 
-  def tableNames: Seq[String] = listTables.getTableNames.asScala
+  def tableNames: collection.Seq[String] = listTables.getTableNames.asScala
   def lastEvaluatedTableName: Option[String] = Option(listTables.getLastEvaluatedTableName)
 
   def describe(table: Table): Option[TableMeta] = describe(table.name)
@@ -77,8 +77,8 @@ trait DynamoDB extends aws.AmazonDynamoDB {
     name: String,
     hashPK: (String, aws.model.ScalarAttributeType),
     rangePK: (String, aws.model.ScalarAttributeType),
-    otherAttributes: Seq[(String, aws.model.ScalarAttributeType)],
-    indexes: Seq[LocalSecondaryIndex]): TableMeta = {
+    otherAttributes: collection.Seq[(String, aws.model.ScalarAttributeType)],
+    indexes: collection.Seq[LocalSecondaryIndex]): TableMeta = {
     create(Table(
       name = name,
       hashPK = hashPK._1,
@@ -92,7 +92,7 @@ trait DynamoDB extends aws.AmazonDynamoDB {
   def create(table: Table): TableMeta = createTable(table)
 
   def createTable(table: Table): TableMeta = {
-    val keySchema: Seq[aws.model.KeySchemaElement] = Seq(
+    val keySchema: collection.Seq[aws.model.KeySchemaElement] = Seq(
       Some(KeySchema(table.hashPK, aws.model.KeyType.HASH)),
       table.rangePK.map(n => KeySchema(n, aws.model.KeyType.RANGE))).flatten.map(_.asInstanceOf[aws.model.KeySchemaElement])
 
@@ -157,7 +157,7 @@ trait DynamoDB extends aws.AmazonDynamoDB {
     }
   }
 
-  def batchGet(tableAndAttributes: Map[Table, List[(String, Any)]]): Seq[Item] = {
+  def batchGet(tableAndAttributes: Map[Table, List[(String, Any)]]): collection.Seq[Item] = {
     import com.amazonaws.services.dynamodbv2.model.{ BatchGetItemRequest, BatchGetItemResult }
 
     case class State(items: List[Item], keys: java.util.Map[String, KeysAndAttributes])
@@ -179,7 +179,7 @@ trait DynamoDB extends aws.AmazonDynamoDB {
         case (None, _) => Stream.Empty
       }
 
-    def toItems(result: BatchGetItemResult): Seq[Item] = {
+    def toItems(result: BatchGetItemResult): collection.Seq[Item] = {
       result.getResponses.asScala.toSeq.flatMap {
         case (t, as) => { table(t).map(table => as.asScala.toSeq.map { a => Item(table, a) }).getOrElse(Nil) }
       }
@@ -211,7 +211,7 @@ trait DynamoDB extends aws.AmazonDynamoDB {
     put(table, Seq(table.hashPK -> hashPK, table.rangePK.get -> rangePK) ++: attributes: _*)
   }
 
-  def attributeValues(attributes: Seq[(String, Any)]): java.util.Map[String, aws.model.AttributeValue] =
+  def attributeValues(attributes: collection.Seq[(String, Any)]): java.util.Map[String, aws.model.AttributeValue] =
     attributes.toMap.mapValues(AttributeValue.toJavaValue(_)).asJava
 
   def put(table: Table, attributes: (String, Any)*): Unit = putItem(table.name, attributes: _*)
@@ -221,7 +221,7 @@ trait DynamoDB extends aws.AmazonDynamoDB {
       .withItem(attributeValues(attributes)))
   }
 
-  def putConditional(tableName: String, attributes: (String, Any)*)(cond: Seq[(String, aws.model.ExpectedAttributeValue)]): Unit = {
+  def putConditional(tableName: String, attributes: (String, Any)*)(cond: collection.Seq[(String, aws.model.ExpectedAttributeValue)]): Unit = {
     putItem(new aws.model.PutItemRequest()
       .withTableName(tableName)
       .withItem(attributeValues(attributes))
@@ -250,7 +250,7 @@ trait DynamoDB extends aws.AmazonDynamoDB {
   }
 
   private[dynamodbv2] def updateAttributes(
-    table: Table, hashPK: Any, rangePK: Option[Any], action: AttributeAction, attributes: Seq[(String, Any)]): Unit = {
+    table: Table, hashPK: Any, rangePK: Option[Any], action: AttributeAction, attributes: collection.Seq[(String, Any)]): Unit = {
 
     val tableKeys = Map(table.hashPK -> AttributeValue.toJavaValue(hashPK)) ++ rangePK.flatMap(rKey => table.rangePK.map(_ -> AttributeValue.toJavaValue(rKey)))
 
@@ -279,13 +279,13 @@ trait DynamoDB extends aws.AmazonDynamoDB {
   def queryWithIndex(
     table: Table,
     index: SecondaryIndex,
-    keyConditions: Seq[(String, aws.model.Condition)],
+    keyConditions: collection.Seq[(String, aws.model.Condition)],
     select: Select = aws.model.Select.ALL_ATTRIBUTES,
-    attributesToGet: Seq[String] = Nil,
+    attributesToGet: collection.Seq[String] = Nil,
     scanIndexForward: Boolean = true,
     consistentRead: Boolean = false,
     limit: Int = 1000,
-    pageStatsCallback: (PageStats => Unit) = null): Seq[Item] = try {
+    pageStatsCallback: (PageStats => Unit) = null): collection.Seq[Item] = try {
 
     val req = new aws.model.QueryRequest()
       .withTableName(table.name)
@@ -306,13 +306,13 @@ trait DynamoDB extends aws.AmazonDynamoDB {
 
   def query(
     table: Table,
-    keyConditions: Seq[(String, aws.model.Condition)],
+    keyConditions: collection.Seq[(String, aws.model.Condition)],
     select: Select = aws.model.Select.ALL_ATTRIBUTES,
-    attributesToGet: Seq[String] = Nil,
+    attributesToGet: collection.Seq[String] = Nil,
     scanIndexForward: Boolean = true,
     consistentRead: Boolean = false,
     limit: Int = 1000,
-    pageStatsCallback: (PageStats => Unit) = null): Seq[Item] = try {
+    pageStatsCallback: (PageStats => Unit) = null): collection.Seq[Item] = try {
 
     val req = new aws.model.QueryRequest()
       .withTableName(table.name)
@@ -332,14 +332,14 @@ trait DynamoDB extends aws.AmazonDynamoDB {
 
   def scan(
     table: Table,
-    filter: Seq[(String, aws.model.Condition)],
+    filter: collection.Seq[(String, aws.model.Condition)],
     limit: Int = 1000,
     segment: Int = 0,
     totalSegments: Int = 1,
     select: Select = aws.model.Select.ALL_ATTRIBUTES,
-    attributesToGet: Seq[String] = Nil,
+    attributesToGet: collection.Seq[String] = Nil,
     consistentRead: Boolean = false,
-    pageStatsCallback: (PageStats => Unit) = null): Seq[Item] = try {
+    pageStatsCallback: (PageStats => Unit) = null): collection.Seq[Item] = try {
 
     val req = new aws.model.ScanRequest()
       .withTableName(table.name)

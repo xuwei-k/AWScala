@@ -50,7 +50,7 @@ class Instance(val underlying: aws.model.Instance) {
 
   def architecture: String = underlying.getArchitecture
 
-  def blockDeviceMappings: Seq[aws.model.InstanceBlockDeviceMapping] = underlying.getBlockDeviceMappings.asScala
+  def blockDeviceMappings: collection.Seq[aws.model.InstanceBlockDeviceMapping] = underlying.getBlockDeviceMappings.asScala
 
   def clientToken: String = underlying.getClientToken
 
@@ -70,13 +70,13 @@ class Instance(val underlying: aws.model.Instance) {
 
   def monitoring: aws.model.Monitoring = underlying.getMonitoring
 
-  def networkInterfaces: Seq[aws.model.InstanceNetworkInterface] = underlying.getNetworkInterfaces.asScala
+  def networkInterfaces: collection.Seq[aws.model.InstanceNetworkInterface] = underlying.getNetworkInterfaces.asScala
 
   def placement: aws.model.Placement = underlying.getPlacement
 
   def platform: Option[String] = Option(underlying.getPlatform)
 
-  def productCodes: Seq[aws.model.ProductCode] = underlying.getProductCodes.asScala
+  def productCodes: collection.Seq[aws.model.ProductCode] = underlying.getProductCodes.asScala
 
   def getRamdiskId: Option[String] = Option(ramdiskId)
 
@@ -86,7 +86,7 @@ class Instance(val underlying: aws.model.Instance) {
 
   def rootDeviceType: String = underlying.getRootDeviceType
 
-  def securityGroups: Seq[aws.model.GroupIdentifier] = underlying.getSecurityGroups.asScala
+  def securityGroups: collection.Seq[aws.model.GroupIdentifier] = underlying.getSecurityGroups.asScala
 
   def spotInstanceRequestId: Option[String] = Option(underlying.getSpotInstanceRequestId)
 

@@ -199,7 +199,7 @@ trait EMR extends aws.AmazonElasticMapReduce {
     runJobFlow(runJobFlowRequest)
   }
 
-  def clusters(clusterStates: Seq[String] = Nil, createdBefore: Option[java.util.Date] = None, createdAfter: Option[java.util.Date] = None): Seq[awscala.emr.Cluster] =
+  def clusters(clusterStates: collection.Seq[String] = Nil, createdBefore: Option[java.util.Date] = None, createdAfter: Option[java.util.Date] = None): collection.Seq[awscala.emr.Cluster] =
     clusterSummaries(clusterStates, createdBefore, createdAfter) map { x => toCluster(x) }
 
   private def toCluster(summary: ClusterSummary): awscala.emr.Cluster =
@@ -210,7 +210,7 @@ trait EMR extends aws.AmazonElasticMapReduce {
   def recentClusters(duration: Duration = 1 hour) =
     clusterSummaries(Nil, None, Some(new DateTime().minusMillis(duration.toMillis.toInt).toDate())).toList.sortBy(x => x.getStatus().getTimeline().getCreationDateTime()) map { x => toCluster(x) }
 
-  def clusterSummaries(clusterStates: Seq[String] = Nil, createdBefore: Option[java.util.Date] = None, createdAfter: Option[java.util.Date] = None): Seq[ClusterSummary] = {
+  def clusterSummaries(clusterStates: collection.Seq[String] = Nil, createdBefore: Option[java.util.Date] = None, createdAfter: Option[java.util.Date] = None): collection.Seq[ClusterSummary] = {
     import aws.model.ListClustersResult
     object clustersSequencer extends Sequencer[ClusterSummary, ListClustersResult, String] {
       val base = new ListClustersRequest().withClusterStates(clusterStates.toList.asJava)
@@ -224,7 +224,7 @@ trait EMR extends aws.AmazonElasticMapReduce {
     clustersSequencer.sequence
   }
 
-  def bootstrapActions(clusterId: Option[String] = None): Seq[Command] = {
+  def bootstrapActions(clusterId: Option[String] = None): collection.Seq[Command] = {
     import aws.model.ListBootstrapActionsResult
     object actionSequencer extends Sequencer[Command, ListBootstrapActionsResult, String] {
       val baseRequest = if (clusterId == None) new ListBootstrapActionsRequest() else new ListBootstrapActionsRequest().withClusterId(clusterId.get)
@@ -236,7 +236,7 @@ trait EMR extends aws.AmazonElasticMapReduce {
     actionSequencer.sequence
   }
 
-  def stepSummaries(clusterId: Option[String] = None, stepStates: Seq[String] = Nil): Seq[StepSummary] = {
+  def stepSummaries(clusterId: Option[String] = None, stepStates: collection.Seq[String] = Nil): collection.Seq[StepSummary] = {
     import aws.model.ListStepsResult
     object stepsSequencer extends Sequencer[StepSummary, ListStepsResult, String] {
       val base = if (clusterId == None) new ListStepsRequest() else new ListStepsRequest().withClusterId(clusterId.get)

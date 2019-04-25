@@ -22,7 +22,7 @@ class SimpleDBSpec extends FlatSpec with Matchers {
     domain.put("User-002", "name" -> "Bob", "age" -> "34", "country" -> "America")
     domain.put("User-003", "name" -> "Chris", "age" -> "27", "country" -> "Japan")
 
-    val items: Seq[Item] = domain.select(s"select * from ${domainName} where country = 'America'")
+    val items: collection.Seq[Item] = domain.select(s"select * from ${domainName} where country = 'America'")
     log.info(s"Found Items: ${items}")
     items.size should equal(2)
 

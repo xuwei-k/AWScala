@@ -47,19 +47,19 @@ class DynamoDBV2Spec extends FlatSpec with Matchers {
     nonExistant.isDefined should not be true
 
     // batch get
-    val batchedCompanies: Seq[Item] = companies.batchGet(List(("Id", "Google"), ("Id", "Microsoft")))
+    val batchedCompanies: collection.Seq[Item] = companies.batchGet(List(("Id", "Google"), ("Id", "Microsoft")))
     batchedCompanies.size should equal(2)
     batchedCompanies.map(item => item.attributes.find(_.name == "Id").get.value.s.get.equals("Google")
       || item.attributes.find(_.name == "Id").get.value.s.get.equals("Microsoft")) should equal(Seq(true, true))
 
-    val batchedNonExistant: Seq[Item] = companies.batchGet(List(("Id", "I Don't Exist"), ("Id", "Neither Do I")))
+    val batchedNonExistant: collection.Seq[Item] = companies.batchGet(List(("Id", "I Don't Exist"), ("Id", "Neither Do I")))
     batchedNonExistant.size should equal(0)
 
     // scan
-    val foundCompanies: Seq[Item] = companies.scan(Seq("url" -> cond.isNotNull))
+    val foundCompanies: collection.Seq[Item] = companies.scan(Seq("url" -> cond.isNotNull))
     foundCompanies.size should equal(2)
 
-    val scanNonExistant: Seq[Item] = companies.scan(Seq("url" -> cond.eq("I Don't Exist")))
+    val scanNonExistant: collection.Seq[Item] = companies.scan(Seq("url" -> cond.eq("I Don't Exist")))
     scanNonExistant.size should equal(0)
 
     // putAttributes
@@ -106,10 +106,10 @@ class DynamoDBV2Spec extends FlatSpec with Matchers {
     val nonExistant: Option[Item] = members.get(4, "U.K.")
     nonExistant.isDefined should not be true
 
-    val googlers: Seq[Item] = members.scan(Seq("Company" -> cond.eq("Google")))
+    val googlers: collection.Seq[Item] = members.scan(Seq("Company" -> cond.eq("Google")))
     googlers.flatMap(_.attributes.find(_.name == "Name").map(_.value.s.get)) should equal(Seq("Bob", "Alice"))
 
-    val scanNonExistant: Seq[Item] = members.scan(Seq("Company" -> cond.eq("I Don't Exist")))
+    val scanNonExistant: collection.Seq[Item] = members.scan(Seq("Company" -> cond.eq("I Don't Exist")))
     scanNonExistant.size should equal(0)
 
     // putAttributes
@@ -237,7 +237,7 @@ class DynamoDBV2Spec extends FlatSpec with Matchers {
     users.put(3, "Name" -> "Chris", "Sex" -> "Female", "Age" -> 9)
     users.put(4, "Name" -> "Michael", "Sex" -> "Male", "Age" -> 65)
 
-    val teenageBoys: Seq[Item] = users.queryWithIndex(
+    val teenageBoys: collection.Seq[Item] = users.queryWithIndex(
       index = globalSecondaryIndex,
       keyConditions = Seq("Sex" -> cond.eq("Male"), "Age" -> cond.lt(20)),
       limit = 1, // to test that we still return 2 names
@@ -313,7 +313,7 @@ class DynamoDBV2Spec extends FlatSpec with Matchers {
     // a limit of 2, with 20 items, will divide into 10 pages
     // (and need 11 page fetches since DynamoDB needs to fetch an additional page to find out there was no more data)
     // a filter of population > 20M should return 4/20 cities, so at least 7 pages will have no matching results
-    val huge1: Seq[Item] = cities.scan(Seq("Population" -> cond.gt(20000000)), limit = 2, pageStatsCallback = addPageCounts)
+    val huge1: collection.Seq[Item] = cities.scan(Seq("Population" -> cond.gt(20000000)), limit = 2, pageStatsCallback = addPageCounts)
     huge1.flatMap(_.attributes.find(_.name == "Name").map(_.value.s.get)) should contain only ("Karachi", "Beijing", "São Paulo", "Shanghai")
     pages should be(11)
     scanned should be(20)
@@ -323,7 +323,7 @@ class DynamoDBV2Spec extends FlatSpec with Matchers {
     // a limit of 3, with 20 items, will divide into 7 pages
     // (and need 7 page fetches as the last page is partial so DynamoDB can tell it's done)
     // a filter of population > 20M should return 4/20 cities, so at least 3 pages will have no matching results
-    val huge2: Seq[Item] = cities.scan(Seq("Population" -> cond.gt(20000000)), limit = 3, pageStatsCallback = addPageCounts)
+    val huge2: collection.Seq[Item] = cities.scan(Seq("Population" -> cond.gt(20000000)), limit = 3, pageStatsCallback = addPageCounts)
     huge2.flatMap(_.attributes.find(_.name == "Name").map(_.value.s.get)) should contain only ("Beijing", "Karachi", "Shanghai", "São Paulo")
     pages should be(7)
     scanned should be(20)
@@ -331,7 +331,7 @@ class DynamoDBV2Spec extends FlatSpec with Matchers {
     resetCounts
 
     // a filter of population > 2 should return 20/20 cities, and a limit of 101 gives all results on a single page
-    val all1: Seq[Item] = cities.scan(Seq("Population" -> cond.gt(2)), limit = 101, pageStatsCallback = addPageCounts)
+    val all1: collection.Seq[Item] = cities.scan(Seq("Population" -> cond.gt(2)), limit = 101, pageStatsCallback = addPageCounts)
     all1.size should be(20)
     pages should be(1)
     scanned should be(20)
@@ -339,7 +339,7 @@ class DynamoDBV2Spec extends FlatSpec with Matchers {
     resetCounts
 
     // but if you only take a few items from the sequence, it shouldn't fetch more pages than needed
-    val all1b: Seq[Item] = cities.scan(Seq("Population" -> cond.gt(2)), limit = 3, pageStatsCallback = addPageCounts)
+    val all1b: collection.Seq[Item] = cities.scan(Seq("Population" -> cond.gt(2)), limit = 3, pageStatsCallback = addPageCounts)
     val List(first, second) = all1b.take(2).flatMap(_.attributes.find(_.name == "Name").map(_.value.s.get)).toList
     pages should be(1) // it should only fetch a single page
     scanned should be(3) // but it would scan the entire page,
@@ -347,7 +347,7 @@ class DynamoDBV2Spec extends FlatSpec with Matchers {
     resetCounts
 
     // a filter of population > 2 should return 20/20 cities, and a limit of 11 gives two pages with results on both
-    val all2: Seq[Item] = cities.scan(Seq("Population" -> cond.gt(2)), limit = 11, pageStatsCallback = addPageCounts)
+    val all2: collection.Seq[Item] = cities.scan(Seq("Population" -> cond.gt(2)), limit = 11, pageStatsCallback = addPageCounts)
     all2.size should be(20)
     pages should be(2)
     scanned should be(20)
@@ -355,7 +355,7 @@ class DynamoDBV2Spec extends FlatSpec with Matchers {
     resetCounts
 
     // the same query should work fine without a callback
-    val all3: Seq[Item] = cities.scan(Seq("Population" -> cond.gt(2)), limit = 11, pageStatsCallback = addPageCounts)
+    val all3: collection.Seq[Item] = cities.scan(Seq("Population" -> cond.gt(2)), limit = 11, pageStatsCallback = addPageCounts)
     all3.size should be(20)
 
     cities.destroy()
@@ -426,7 +426,7 @@ class DynamoDBV2Spec extends FlatSpec with Matchers {
     // a limit of 1, with 2 matching Chinese cities, will divide into 2 pages
     // (and need 3 page fetches since DynamoDB needs to fetch an additional page to find out there was no more data)
     // a filter of population > 20M should return 2 matching Chinese cities
-    val hugeChinese1: Seq[Item] = cities.query(Seq("Country" -> cond.eq("China"), "Population" -> cond.gt(20000000)), limit = 1, pageStatsCallback = addPageCounts)
+    val hugeChinese1: collection.Seq[Item] = cities.query(Seq("Country" -> cond.eq("China"), "Population" -> cond.gt(20000000)), limit = 1, pageStatsCallback = addPageCounts)
     hugeChinese1.flatMap(_.attributes.find(_.name == "Name").map(_.value.s.get)) should contain only ("Beijing", "Shanghai")
     pages should be(3)
     scanned should be(2)
@@ -436,7 +436,7 @@ class DynamoDBV2Spec extends FlatSpec with Matchers {
     // a limit of 2, with 3 matching Chinese cities, will divide into 2 pages
     // (and need 2 page fetches as the last page is partial so DynamoDB can tell it's done)
     // a filter of population > 10M should return 3 matching Chinese cities
-    val hugeChinese2: Seq[Item] = cities.query(Seq("Country" -> cond.eq("China"), "Population" -> cond.gt(10000000)), limit = 2, pageStatsCallback = addPageCounts)
+    val hugeChinese2: collection.Seq[Item] = cities.query(Seq("Country" -> cond.eq("China"), "Population" -> cond.gt(10000000)), limit = 2, pageStatsCallback = addPageCounts)
     hugeChinese2.flatMap(_.attributes.find(_.name == "Name").map(_.value.s.get)) should contain only ("Shanghai", "Shenzhen", "Beijing")
     pages should be(2)
     scanned should be(3)
@@ -444,7 +444,7 @@ class DynamoDBV2Spec extends FlatSpec with Matchers {
     resetCounts
 
     // but if you only take a few items from the sequence, it shouldn't fetch more pages than needed
-    val hugeChinese2b: Seq[Item] = cities.query(Seq("Country" -> cond.eq("China"), "Population" -> cond.gt(10000000)), limit = 2, pageStatsCallback = addPageCounts)
+    val hugeChinese2b: collection.Seq[Item] = cities.query(Seq("Country" -> cond.eq("China"), "Population" -> cond.gt(10000000)), limit = 2, pageStatsCallback = addPageCounts)
     hugeChinese2b.take(1).flatMap(_.attributes.find(_.name == "Name").map(_.value.s.get)) should contain oneOf ("Shanghai", "Shenzhen", "Beijing")
     pages should be(1) // it should only fetch a single page
     scanned should be(2) // but it would scan the entire page,
@@ -452,7 +452,7 @@ class DynamoDBV2Spec extends FlatSpec with Matchers {
     resetCounts
 
     // a filter of population > 2 should return 4 matching Chinese cities, and a limit of 11 gives all results on a single page
-    val allChinese1: Seq[Item] = cities.query(Seq("Country" -> cond.eq("China"), "Population" -> cond.gt(2)), limit = 11, pageStatsCallback = addPageCounts)
+    val allChinese1: collection.Seq[Item] = cities.query(Seq("Country" -> cond.eq("China"), "Population" -> cond.gt(2)), limit = 11, pageStatsCallback = addPageCounts)
     allChinese1.size should be(4)
     pages should be(1)
     scanned should be(4)
@@ -460,7 +460,7 @@ class DynamoDBV2Spec extends FlatSpec with Matchers {
     resetCounts
 
     // the same query should work fine without a callback
-    val allChinese2: Seq[Item] = cities.query(Seq("Country" -> cond.eq("China"), "Population" -> cond.gt(2)), limit = 11)
+    val allChinese2: collection.Seq[Item] = cities.query(Seq("Country" -> cond.eq("China"), "Population" -> cond.gt(2)), limit = 11)
     allChinese2.size should be(4)
 
     cities.destroy()

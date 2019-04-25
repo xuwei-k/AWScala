@@ -9,7 +9,7 @@ object Projection {
     projectionType = aws.model.ProjectionType.fromValue(p.getProjectionType))
 }
 
-case class Projection(projectionType: ProjectionType, nonKeyAttributes: Seq[String] = Nil) extends aws.model.Projection {
+case class Projection(projectionType: ProjectionType, nonKeyAttributes: collection.Seq[String] = Nil) extends aws.model.Projection {
   setProjectionType(projectionType)
 
   if (projectionType == ProjectionType.Include) {

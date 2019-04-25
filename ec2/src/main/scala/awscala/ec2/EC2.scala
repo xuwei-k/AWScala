@@ -30,16 +30,16 @@ trait EC2 extends aws.AmazonEC2Async {
   // Instances
   // ------------------------------------------
 
-  def instances: Seq[Instance] = {
+  def instances: collection.Seq[Instance] = {
     describeInstances.getReservations.asScala.flatMap(_.getInstances.asScala.toSeq.map(Instance(_)))
   }
 
-  def instances(instanceId: String*): Seq[Instance] = {
+  def instances(instanceId: String*): collection.Seq[Instance] = {
     describeInstances(new aws.model.DescribeInstancesRequest().withInstanceIds(instanceId: _*))
       .getReservations.asScala.flatMap(_.getInstances.asScala).map(Instance(_))
   }
 
-  def instances(instanceIds: Seq[String] = Nil, filters: Seq[aws.model.Filter] = Nil): Seq[Instance] = {
+  def instances(instanceIds: collection.Seq[String] = Nil, filters: collection.Seq[aws.model.Filter] = Nil): collection.Seq[Instance] = {
     describeInstances(new aws.model.DescribeInstancesRequest().withInstanceIds(instanceIds.asJava).withFilters(filters.asJava))
       .getReservations.asScala.flatMap(_.getInstances.asScala).map(Instance(_))
   }
@@ -49,13 +49,13 @@ trait EC2 extends aws.AmazonEC2Async {
     keyPair: KeyPair,
     instanceType: InstanceType = InstanceType.T1_Micro,
     min: Int = 1,
-    max: Int = 1): Seq[Instance] = {
+    max: Int = 1): collection.Seq[Instance] = {
 
     runAndAwait(new RunInstancesRequest(imageId, min, max).withKeyName(keyPair.name).withInstanceType(instanceType))
   }
 
   @tailrec
-  final def awaitInstances(awaiting: Seq[Instance], checkInterval: Long = 5000L): Seq[Instance] = {
+  final def awaitInstances(awaiting: collection.Seq[Instance], checkInterval: Long = 5000L): collection.Seq[Instance] = {
     val requested = instances(awaiting.map(_.instanceId))
     if (requested.exists(_.state.getName == aws.model.InstanceStateName.Pending.toString)) {
       Thread.sleep(checkInterval)
@@ -65,7 +65,7 @@ trait EC2 extends aws.AmazonEC2Async {
     }
   }
 
-  def runAndAwait(request: aws.model.RunInstancesRequest): Seq[Instance] = awaitInstances(runInstances(request).getReservation.getInstances.asScala.map(Instance(_)))
+  def runAndAwait(request: aws.model.RunInstancesRequest): collection.Seq[Instance] = awaitInstances(runInstances(request).getReservation.getInstances.asScala.map(Instance(_)))
 
   def start(instance: Instance*) = startInstances(new aws.model.StartInstancesRequest()
     .withInstanceIds(instance.map(_.instanceId): _*))
@@ -83,7 +83,7 @@ trait EC2 extends aws.AmazonEC2Async {
   // Key Pairs
   // ------------------------------------------
 
-  def keyPairs: Seq[KeyPair] = describeKeyPairs.getKeyPairs.asScala.map(KeyPair(_))
+  def keyPairs: collection.Seq[KeyPair] = describeKeyPairs.getKeyPairs.asScala.map(KeyPair(_))
 
   def keyPair(name: String): Option[KeyPair] = {
     describeKeyPairs(new aws.model.DescribeKeyPairsRequest().withKeyNames(name))
@@ -99,7 +99,7 @@ trait EC2 extends aws.AmazonEC2Async {
   // Security Groups
   // ------------------------------------------
 
-  def securityGroups: Seq[SecurityGroup] = describeSecurityGroups.getSecurityGroups.asScala.map(SecurityGroup(_))
+  def securityGroups: collection.Seq[SecurityGroup] = describeSecurityGroups.getSecurityGroups.asScala.map(SecurityGroup(_))
 
   def securityGroup(name: String): Option[SecurityGroup] = {
     describeSecurityGroups(new aws.model.DescribeSecurityGroupsRequest().withGroupNames(name))
@@ -116,7 +116,7 @@ trait EC2 extends aws.AmazonEC2Async {
     deleteSecurityGroup(new aws.model.DeleteSecurityGroupRequest().withGroupName(name))
   }
 
-  def tags(filters: Seq[aws.model.Filter] = Nil): Seq[aws.model.TagDescription] = {
+  def tags(filters: collection.Seq[aws.model.Filter] = Nil): collection.Seq[aws.model.TagDescription] = {
     import aws.model.DescribeTagsResult
     object tagsSequencer extends Sequencer[aws.model.TagDescription, DescribeTagsResult, String] {
 
@@ -129,7 +129,7 @@ trait EC2 extends aws.AmazonEC2Async {
     tagsSequencer.sequence
   }
 
-  def instanceStatuses(includeAll: Boolean = false, instanceIds: Seq[String] = Nil, filters: Seq[aws.model.Filter] = Nil): Seq[aws.model.InstanceStatus] = {
+  def instanceStatuses(includeAll: Boolean = false, instanceIds: collection.Seq[String] = Nil, filters: collection.Seq[aws.model.Filter] = Nil): collection.Seq[aws.model.InstanceStatus] = {
     import aws.model.DescribeInstanceStatusResult
 
     object instanceStatusSequencer extends Sequencer[aws.model.InstanceStatus, DescribeInstanceStatusResult, String] {
@@ -142,7 +142,7 @@ trait EC2 extends aws.AmazonEC2Async {
     instanceStatusSequencer.sequence
   }
 
-  def reservedInstanceOfferings(availabilityZone: Option[String] = None, filters: Seq[aws.model.Filter] = Nil): Seq[aws.model.ReservedInstancesOffering] = {
+  def reservedInstanceOfferings(availabilityZone: Option[String] = None, filters: collection.Seq[aws.model.Filter] = Nil): collection.Seq[aws.model.ReservedInstancesOffering] = {
     import aws.model.DescribeReservedInstancesOfferingsResult
 
     object reservedSequencer extends Sequencer[aws.model.ReservedInstancesOffering, DescribeReservedInstancesOfferingsResult, String] {

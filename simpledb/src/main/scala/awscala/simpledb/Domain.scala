@@ -4,7 +4,7 @@ case class Domain(name: String) {
 
   def metadata()(implicit simpleDB: SimpleDB): DomainMetadata = simpleDB.domainMetadata(this)
 
-  def select(expression: String, consistentRead: Boolean = true)(implicit simpleDB: SimpleDB): Seq[Item] = {
+  def select(expression: String, consistentRead: Boolean = true)(implicit simpleDB: SimpleDB): collection.Seq[Item] = {
     simpleDB.select(this, expression, consistentRead)
   }
 
@@ -22,8 +22,8 @@ case class Domain(name: String) {
   def delete(attribute: Attribute)(implicit simpleDB: SimpleDB) = deleteAttribute(attribute)
   def deleteAttribute(attribute: Attribute)(implicit simpleDB: SimpleDB) = simpleDB.deleteAttributes(Seq(attribute))
 
-  def deleteItems(items: Seq[Item])(implicit simpleDB: SimpleDB) = simpleDB.deleteItems(items)
-  def deleteAttributes(attributes: Seq[Attribute])(implicit simpleDB: SimpleDB) = simpleDB.deleteAttributes(attributes)
+  def deleteItems(items: collection.Seq[Item])(implicit simpleDB: SimpleDB) = simpleDB.deleteItems(items)
+  def deleteAttributes(attributes: collection.Seq[Attribute])(implicit simpleDB: SimpleDB) = simpleDB.deleteAttributes(attributes)
 
   def destroy()(implicit simpleDB: SimpleDB): Unit = simpleDB.deleteDomain(this)
 

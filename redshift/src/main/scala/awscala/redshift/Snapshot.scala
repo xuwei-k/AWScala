@@ -53,7 +53,7 @@ class Snapshot(
   val backupProgressInMegaBytes: Double,
   val totalBackupSizeInMegaBytes: Double,
   val vpcId: String,
-  val accountsWithRestoreAccess: Seq[AccountWithRestoreAccess],
+  val accountsWithRestoreAccess: collection.Seq[AccountWithRestoreAccess],
   val clusterCreatedAt: DateTime,
   val snapshotCreatedAt: DateTime) extends aws.model.Snapshot {
 

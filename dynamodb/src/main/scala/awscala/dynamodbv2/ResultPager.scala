@@ -29,7 +29,7 @@ sealed trait ResultPager[TReq, TRes] extends Iterator[Item] {
   def operation: TReq => TRes
   def request: TReq
 
-  var items: Seq[Item] = null
+  var items: collection.Seq[Item] = null
   var pageNo = 0
   var lastKey: java.util.Map[String, aws.model.AttributeValue] = null
   var index = 0

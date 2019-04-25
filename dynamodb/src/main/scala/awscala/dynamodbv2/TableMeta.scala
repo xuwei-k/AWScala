@@ -24,9 +24,9 @@ case class TableMeta(
   sizeBytes: Long,
   itemCount: Long,
   status: TableStatus,
-  attributes: Seq[AttributeDefinition],
-  keySchema: Seq[KeySchema],
-  localSecondaryIndexes: Seq[LocalSecondaryIndexMeta],
+  attributes: collection.Seq[AttributeDefinition],
+  keySchema: collection.Seq[KeySchema],
+  localSecondaryIndexes: collection.Seq[LocalSecondaryIndexMeta],
   provisionedThroughput: ProvisionedThroughputMeta,
   createdAt: DateTime) extends aws.model.TableDescription {
 
@@ -61,7 +61,7 @@ case class LocalSecondaryIndexMeta(
   name: String,
   sizeBytes: Long,
   itemCount: Long,
-  keySchema: Seq[KeySchema],
+  keySchema: collection.Seq[KeySchema],
   projection: Projection) extends aws.model.LocalSecondaryIndexDescription {
 
   setIndexName(name)

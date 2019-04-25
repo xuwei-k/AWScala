@@ -3,7 +3,7 @@ package awscala
 import scala.collection.JavaConverters._
 import com.amazonaws.auth.{ policy => aws }
 
-case class Policy(statements: Seq[Statement], id: Option[String] = None) extends aws.Policy {
+case class Policy(statements: collection.Seq[Statement], id: Option[String] = None) extends aws.Policy {
   id.foreach(i => setId(i))
   setStatements(statements.map(_.asInstanceOf[aws.Statement]).asJava)
 

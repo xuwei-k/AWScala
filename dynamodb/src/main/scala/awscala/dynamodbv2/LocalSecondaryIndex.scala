@@ -12,7 +12,7 @@ object LocalSecondaryIndex {
 }
 case class LocalSecondaryIndex(
   name: String,
-  keySchema: Seq[KeySchema],
+  keySchema: collection.Seq[KeySchema],
   projection: Projection) extends aws.model.LocalSecondaryIndex with SecondaryIndex {
 
   setIndexName(name)

@@ -14,7 +14,7 @@ object ClusterSubnetGroup {
 }
 
 case class ClusterSubnetGroup(
-  name: String, description: String, status: String, subnets: Seq[Subnet], vpcId: String)
+  name: String, description: String, status: String, subnets: collection.Seq[Subnet], vpcId: String)
   extends aws.model.ClusterSubnetGroup {
 
   setClusterSubnetGroupName(name)

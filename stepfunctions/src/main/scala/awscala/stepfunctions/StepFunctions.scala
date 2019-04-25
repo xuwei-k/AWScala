@@ -65,7 +65,7 @@ trait StepFunctions extends aws.AWSStepFunctions {
 
   def stateMachine(name: String): Option[StateMachine] = stateMachines.find(_.name == name)
 
-  def stateMachines: Seq[StateMachine] = {
+  def stateMachines: collection.Seq[StateMachine] = {
     object StateMachineSequencer extends Sequencer[StateMachineListItem, ListStateMachinesResult, String] {
       val base = new ListStateMachinesRequest()
       def getInitial: ListStateMachinesResult = listStateMachines(base)
@@ -85,7 +85,7 @@ trait StepFunctions extends aws.AWSStepFunctions {
 
   def activity(name: String): Option[Activity] = activities.find(_.name == name)
 
-  def activities: Seq[Activity] = {
+  def activities: collection.Seq[Activity] = {
     object ActivitiesSequencer extends Sequencer[ActivityListItem, ListActivitiesResult, String] {
       private val base = new ListActivitiesRequest()
       def getInitial: ListActivitiesResult = listActivities(base)

@@ -30,7 +30,7 @@ trait SimpleDB extends aws.AmazonSimpleDB {
   // Domains
   // ------------------------------------------
 
-  def domains: Seq[Domain] = {
+  def domains: collection.Seq[Domain] = {
     import aws.model.ListDomainsResult
 
     object domainsSequencer extends Sequencer[Domain, ListDomainsResult, String] {
@@ -60,7 +60,7 @@ trait SimpleDB extends aws.AmazonSimpleDB {
   // Items/Attributes
   // ------------------------------------------
 
-  def select(domain: Domain, expression: String, consistentRead: Boolean = false): Seq[Item] = {
+  def select(domain: Domain, expression: String, consistentRead: Boolean = false): collection.Seq[Item] = {
     import aws.model.SelectResult
 
     object selectSequencer extends Sequencer[Item, SelectResult, String] {
@@ -73,7 +73,7 @@ trait SimpleDB extends aws.AmazonSimpleDB {
     selectSequencer.sequence
   }
 
-  def attributes(item: Item): Seq[Attribute] = {
+  def attributes(item: Item): collection.Seq[Attribute] = {
     getAttributes(
       new aws.model.GetAttributesRequest().withDomainName(item.domain.name).withItemName(item.name))
       .getAttributes.asScala.map(as => Attribute(item, as)).toSeq
@@ -99,7 +99,7 @@ trait SimpleDB extends aws.AmazonSimpleDB {
       }.asJava))
   }
 
-  def deleteItems(items: Seq[Item]): Unit = {
+  def deleteItems(items: collection.Seq[Item]): Unit = {
     items.headOption.foreach { item =>
       batchDeleteAttributes(new aws.model.BatchDeleteAttributesRequest()
         .withDomainName(item.domain.name)
@@ -107,7 +107,7 @@ trait SimpleDB extends aws.AmazonSimpleDB {
     }
   }
 
-  def deleteAttributes(attributes: Seq[Attribute]): Unit = {
+  def deleteAttributes(attributes: collection.Seq[Attribute]): Unit = {
     attributes.headOption.foreach { attr =>
       deleteAttributes(new aws.model.DeleteAttributesRequest()
         .withItemName(attr.item.name)

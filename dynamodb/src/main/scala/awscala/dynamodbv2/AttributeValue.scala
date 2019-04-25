@@ -8,7 +8,7 @@ import java.util.{ Map => JMap }
 object AttributeValue {
 
   private def recurseMapValue(valueMap: Map[String, Any]): Map[String, aws.model.AttributeValue] = valueMap.map {
-    case (key, xs: Seq[_]) => key -> toJavaValue(xs)
+    case (key, xs: collection.Seq[_]) => key -> toJavaValue(xs)
     case (key, vl: Map[_, _]) => key -> {
       val _vl: Map[String, Any] = vl.map { case (k, v) => k.asInstanceOf[String] -> v }
       new aws.model.AttributeValue().withM(recurseMapValue(_vl).asJava)
@@ -24,7 +24,7 @@ object AttributeValue {
       case bl: Boolean => value.withBOOL(bl)
       case n: java.lang.Number => value.withN(n.toString)
       case b: ByteBuffer => value.withB(b)
-      case xs: Seq[_] => xs.headOption match {
+      case xs: collection.Seq[_] => xs.headOption match {
         case Some(m: Map[_, _]) => value.withL(xs.map(toJavaValue).asJavaCollection)
         case Some(s: String) => value.withSS(xs.map(_.asInstanceOf[String]).asJava)
         case Some(n: java.lang.Number) => value.withNS(xs.map(_.toString).asJava)
@@ -58,10 +58,10 @@ case class AttributeValue(
   n: Option[String] = None,
   b: Option[ByteBuffer] = None,
   m: Option[JMap[String, aws.model.AttributeValue]] = None,
-  l: Seq[aws.model.AttributeValue] = Nil,
-  ss: Seq[String] = Nil,
-  ns: Seq[String] = Nil,
-  bs: Seq[ByteBuffer] = Nil) extends aws.model.AttributeValue {
+  l: collection.Seq[aws.model.AttributeValue] = Nil,
+  ss: collection.Seq[String] = Nil,
+  ns: collection.Seq[String] = Nil,
+  bs: collection.Seq[ByteBuffer] = Nil) extends aws.model.AttributeValue {
 
   setS(s.orNull[String])
   bl.foreach(setBOOL(_))

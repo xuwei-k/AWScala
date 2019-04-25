@@ -6,9 +6,9 @@ case class Table(
   name: String,
   hashPK: String,
   rangePK: Option[String] = None,
-  attributes: Seq[AttributeDefinition] = Nil,
-  localSecondaryIndexes: Seq[LocalSecondaryIndex] = Nil,
-  globalSecondaryIndexes: Seq[GlobalSecondaryIndex] = Nil,
+  attributes: collection.Seq[AttributeDefinition] = Nil,
+  localSecondaryIndexes: collection.Seq[LocalSecondaryIndex] = Nil,
+  globalSecondaryIndexes: collection.Seq[GlobalSecondaryIndex] = Nil,
   provisionedThroughput: Option[ProvisionedThroughput] = None) {
 
   // ------------------------------------------
@@ -27,9 +27,9 @@ case class Table(
     dynamoDB.get(this, hashPK, rangePK)
   }
 
-  def batchGet(attributes: List[(String, Any)])(implicit dynamoDB: DynamoDB): Seq[Item] = batchGetItems(attributes)
+  def batchGet(attributes: List[(String, Any)])(implicit dynamoDB: DynamoDB): collection.Seq[Item] = batchGetItems(attributes)
 
-  def batchGetItems(attributes: List[(String, Any)])(implicit dynamoDB: DynamoDB): Seq[Item] = {
+  def batchGetItems(attributes: List[(String, Any)])(implicit dynamoDB: DynamoDB): collection.Seq[Item] = {
     dynamoDB.batchGet(Map(this -> attributes))
   }
 
@@ -55,13 +55,13 @@ case class Table(
 
   def queryWithIndex(
     index: SecondaryIndex,
-    keyConditions: Seq[(String, aws.model.Condition)],
+    keyConditions: collection.Seq[(String, aws.model.Condition)],
     select: Select = aws.model.Select.ALL_ATTRIBUTES,
-    attributesToGet: Seq[String] = Nil,
+    attributesToGet: collection.Seq[String] = Nil,
     scanIndexForward: Boolean = true,
     consistentRead: Boolean = false,
     limit: Int = 1000,
-    pageStatsCallback: PageStats => Unit = null)(implicit dynamoDB: DynamoDB): Seq[Item] = {
+    pageStatsCallback: PageStats => Unit = null)(implicit dynamoDB: DynamoDB): collection.Seq[Item] = {
     dynamoDB.queryWithIndex(
       table = this,
       index = index,
@@ -75,13 +75,13 @@ case class Table(
   }
 
   def query(
-    keyConditions: Seq[(String, aws.model.Condition)],
+    keyConditions: collection.Seq[(String, aws.model.Condition)],
     select: Select = aws.model.Select.ALL_ATTRIBUTES,
-    attributesToGet: Seq[String] = Nil,
+    attributesToGet: collection.Seq[String] = Nil,
     scanIndexForward: Boolean = true,
     consistentRead: Boolean = false,
     limit: Int = 1000,
-    pageStatsCallback: PageStats => Unit = null)(implicit dynamoDB: DynamoDB): Seq[Item] = {
+    pageStatsCallback: PageStats => Unit = null)(implicit dynamoDB: DynamoDB): collection.Seq[Item] = {
     dynamoDB.query(
       table = this,
       keyConditions = keyConditions,
@@ -94,14 +94,14 @@ case class Table(
   }
 
   def scan(
-    filter: Seq[(String, aws.model.Condition)],
+    filter: collection.Seq[(String, aws.model.Condition)],
     select: Select = aws.model.Select.ALL_ATTRIBUTES,
-    attributesToGet: Seq[String] = Nil,
+    attributesToGet: collection.Seq[String] = Nil,
     limit: Int = 1000,
     segment: Int = 0,
     totalSegments: Int = 1,
     consistentRead: Boolean = false,
-    pageStatsCallback: PageStats => Unit = null)(implicit dynamoDB: DynamoDB): Seq[Item] = {
+    pageStatsCallback: PageStats => Unit = null)(implicit dynamoDB: DynamoDB): collection.Seq[Item] = {
     dynamoDB.scan(
       table = this,
       filter = filter,
@@ -119,29 +119,29 @@ case class Table(
     dynamoDB: DynamoDB): Unit = {
     dynamoDB.updateAttributes(this, hashPK, None, aws.model.AttributeAction.ADD, attributes)
   }
-  def addAttributes(hashPK: Any, rangePK: Any, attributes: Seq[(String, Any)])(
+  def addAttributes(hashPK: Any, rangePK: Any, attributes: collection.Seq[(String, Any)])(
     implicit
     dynamoDB: DynamoDB): Unit = {
     dynamoDB.updateAttributes(this, hashPK, Some(rangePK), aws.model.AttributeAction.ADD, attributes)
   }
 
-  def deleteAttributes(hashPK: Any, attributes: Seq[(String, Any)])(
+  def deleteAttributes(hashPK: Any, attributes: collection.Seq[(String, Any)])(
     implicit
     dynamoDB: DynamoDB): Unit = {
     dynamoDB.updateAttributes(this, hashPK, None, aws.model.AttributeAction.DELETE, attributes)
   }
-  def deleteAttributes(hashPK: Any, rangePK: Any, attributes: Seq[(String, Any)])(
+  def deleteAttributes(hashPK: Any, rangePK: Any, attributes: collection.Seq[(String, Any)])(
     implicit
     dynamoDB: DynamoDB): Unit = {
     dynamoDB.updateAttributes(this, hashPK, Some(rangePK), aws.model.AttributeAction.DELETE, attributes)
   }
 
-  def putAttributes(hashPK: Any, attributes: Seq[(String, Any)])(
+  def putAttributes(hashPK: Any, attributes: collection.Seq[(String, Any)])(
     implicit
     dynamoDB: DynamoDB): Unit = {
     dynamoDB.updateAttributes(this, hashPK, None, aws.model.AttributeAction.PUT, attributes)
   }
-  def putAttributes(hashPK: Any, rangePK: Any, attributes: Seq[(String, Any)])(
+  def putAttributes(hashPK: Any, rangePK: Any, attributes: collection.Seq[(String, Any)])(
     implicit
     dynamoDB: DynamoDB): Unit = {
     dynamoDB.updateAttributes(this, hashPK, Some(rangePK), aws.model.AttributeAction.PUT, attributes)
