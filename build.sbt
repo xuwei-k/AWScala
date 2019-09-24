@@ -53,7 +53,7 @@ lazy val commonSettings = Seq(
   sonatypeProfileName := "com.github.seratch"
 )
 
-lazy val awsJavaSdkVersion = "1.11.621"
+lazy val awsJavaSdkVersion = "1.11.637"
 
 lazy val all = (project in file("."))
   .settings(commonSettings)
@@ -70,7 +70,7 @@ lazy val core = project
     moduleName := "awscala-core",
     libraryDependencies ++= Seq(
       "com.amazonaws" % "aws-java-sdk-core" % awsJavaSdkVersion,
-      "joda-time" % "joda-time" % "2.10.3",
+      "joda-time" % "joda-time" % "2.10.4",
       "org.joda" % "joda-convert" % "2.2.1",
       "org.bouncycastle" % "bcprov-jdk16" % "1.46" % "provided",
       "ch.qos.logback" % "logback-classic" % "1.2.3" % "test",
